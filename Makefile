@@ -17,6 +17,7 @@ N_TEMP = temp.a
 NAME = libftprintf.a
 
 SRCS = ft_printf.c \
+	   ft_printf2.c \
 	   ft_treat_char.c \
 	   ft_treat_int.c \
 	   ft_treat_pointer.c \
@@ -27,6 +28,7 @@ SRCS = ft_printf.c \
 
 
 SURO = ft_printf.o \
+	   ft_printf2.o \
 	   ft_treat.char.o \
 	   ft_treat_int.o \
 	   ft_treat_pointer.o \

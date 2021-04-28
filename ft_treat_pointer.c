@@ -60,8 +60,8 @@ void	print_hex_p(size_t n)
 
 int		ft_treat_pointer(va_list print_list, the_flags *flags, int nb)
 {
-	size_t pt;
-	int count;
+	size_t	pt;
+	int		count;
 
 	pt = va_arg(print_list, size_t);
 	count = compute_options_pt(pt, flags, nb);

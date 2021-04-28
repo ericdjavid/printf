@@ -12,6 +12,48 @@
 
 #include "./ft_printf.h"
 
+int	treat_int_put_zero(int i, int numb)
+{
+	int	count;
+
+	count = 0;
+	while (i > compute_size(numb))
+	{
+		ft_putchar_fd('0', 1);
+		count++;
+		i--;
+	}
+	return (count);
+}
+
+int	not_minus(the_flags *flags, int nb, int numb, int i)
+{
+	int	count;
+
+	count = 0;
+	if (flags[nb].minus == 1)
+	{
+		if ((numb < 0 && flags[nb].zero) || (numb < 0 && flags[nb].precision))
+			ft_putnbr_fd(numb * -1, 1);
+		ft_putnbr_fd(numb, 1);
+	}
+	count += ft_treat_width(flags, flags[nb].zero, nb, i);
+	if (!flags[nb].minus)
+	{
+		if (flags[nb].precision > compute_size(numb))
+		{
+			i = flags[nb].precision;
+			if (numb < 0)
+				i++;
+			count += treat_int_put_zero(i, numb);
+		}
+		if ((numb < 0 && flags[nb].zero) || (numb < 0 && flags[nb].precision))
+			ft_putnbr_fd(numb * -1, 1);
+		ft_putnbr_fd(numb, 1);
+	}
+	return (count);
+}
+
 int	compute_size(int numb)
 {
 	int comp;
@@ -37,7 +79,7 @@ int	ft_treat_int(va_list print_list, the_flags *flags, int nb)
 	int i;
 
 	numb = (int)va_arg(print_list, int);
-	i = count = compute_size(numb);
+	count = compute_size(numb);
 	if ((flags[nb].zero && numb < 0) || (flags[nb].precision && numb < 0))
 	{
 		ft_putchar_fd('-', 1);
@@ -46,8 +88,7 @@ int	ft_treat_int(va_list print_list, the_flags *flags, int nb)
 	if (flags[nb].precision > compute_size(numb))
 	{
 		i = flags[nb].precision;
-		if (numb < 0)
-			i++;
+		numb < 0 ? i++ : i;
 		while (i > compute_size(numb) && flags[nb].minus)
 		{
 			ft_putchar_fd('0', 1);
@@ -56,33 +97,6 @@ int	ft_treat_int(va_list print_list, the_flags *flags, int nb)
 		}
 		i = flags[nb].precision;
 	}
-	if (flags[nb].minus == 1)
-	{
-		if ((numb < 0 && flags[nb].zero) || (numb < 0 && flags[nb].precision))
-			ft_putnbr_fd(numb * -1, 1);
-		else
-			ft_putnbr_fd(numb, 1);
-	}
-	count += ft_treat_width(flags, flags[nb].zero, nb, i);
-	if (!flags[nb].minus)
-	{
-		if (flags[nb].precision > compute_size(numb))
-		{
-			i = flags[nb].precision;
-			if (numb < 0)
-				i++;
-			while (i > compute_size(numb))
-			{
-				ft_putchar_fd('0', 1);
-				count++;
-				i--;
-			}
-		}
-		if ((numb < 0 && flags[nb].zero) || (numb < 0 && flags[nb].precision))
-		{
-			ft_putnbr_fd(numb * -1, 1);
-		} else
-			ft_putnbr_fd(numb, 1);
-	}
+	count += not_minus(flags, nb, numb, i);
 	return (count);
 }

@@ -12,6 +12,31 @@
 
 #include "./ft_printf.h"
 
+int		treat_minus_unsigned(the_flags *flags, int nb, int numb, int i)
+{
+	int count;
+
+	count = 0;
+	if (flags[nb].minus == 1)
+		print_dec(numb);
+	count += ft_treat_width(flags, flags[nb].zero, nb, i);
+	if (!flags[nb].minus)
+	{
+		if (flags[nb].precision > count_dec(numb))
+		{
+			i = flags[nb].precision;
+			while (i > count_dec(numb))
+			{
+				ft_putchar_fd('0', 1);
+				count++;
+				i--;
+			}
+		}
+		print_dec(numb);
+	}
+	return (count);
+}
+
 void	print_dec(unsigned long long n)
 {
 	if (n > 9)
@@ -36,12 +61,12 @@ int		count_dec(unsigned long long n)
 
 int		ft_treat_unsigned(va_list print_list, the_flags *flags, int nb)
 {
-	unsigned int numb;
-	int			 count;
-	int			 i;
+	unsigned int	numb;
+	int				count;
+	int				i;
 
 	numb = (unsigned int)va_arg(print_list, unsigned int);
-	i = count = count_dec(numb);
+	count = count_dec(numb);
 	if (flags[nb].precision > count_dec(numb))
 	{
 		i = flags[nb].precision;
@@ -52,25 +77,7 @@ int		ft_treat_unsigned(va_list print_list, the_flags *flags, int nb)
 			i--;
 		}
 		i = flags[nb].precision;
-	}
-	if (flags[nb].minus == 1)
-	{
-		print_dec(numb);
-	}
-	count += ft_treat_width(flags, flags[nb].zero, nb, i);
-	if (!flags[nb].minus)
-	{
-		if (flags[nb].precision > count_dec(numb))
-		{
-			i = flags[nb].precision;
-			while (i > count_dec(numb))
-			{
-				ft_putchar_fd('0', 1);
-				count++;
-				i--;
-			}
-		}
-		print_dec(numb);
+		count += treat_minus_unsigned(flags, nb, numb, i);
 	}
 	return (count);
 }
